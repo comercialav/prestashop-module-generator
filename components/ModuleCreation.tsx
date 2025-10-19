@@ -1,5 +1,6 @@
 
-import React, { useState } from 'react';
+
+import * as React from 'react';
 
 interface ModuleCreationProps {
   onCreate: (description: string) => void;
@@ -7,7 +8,7 @@ interface ModuleCreationProps {
 }
 
 const ModuleCreation: React.FC<ModuleCreationProps> = ({ onCreate, isGenerating }) => {
-  const [description, setDescription] = useState('');
+  const [description, setDescription] = React.useState('');
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();

@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import * as React from 'react';
 import { View, PrestaModule, GenerationStatusEnum, GenerationState } from './types';
 import { generateModuleStream } from './services/geminiService';
 import Header from './components/Header';
@@ -41,9 +41,9 @@ const reviver = (key: string, value: any) => {
 
 
 export default function App() {
-  const [view, setView] = useState<View>(View.CREATION);
+  const [view, setView] = React.useState<View>(View.CREATION);
   // Load modules from localStorage on initial render
-  const [modules, setModules] = useState<PrestaModule[]>(() => {
+  const [modules, setModules] = React.useState<PrestaModule[]>(() => {
     try {
       const savedModules = window.localStorage.getItem('prestaModules');
       return savedModules ? JSON.parse(savedModules, reviver) : [];
@@ -52,10 +52,10 @@ export default function App() {
       return [];
     }
   });
-  const [activeGenerationId, setActiveGenerationId] = useState<string | null>(null);
+  const [activeGenerationId, setActiveGenerationId] = React.useState<string | null>(null);
 
   // Save modules to localStorage whenever they change
-  useEffect(() => {
+  React.useEffect(() => {
     try {
       window.localStorage.setItem('prestaModules', JSON.stringify(modules, replacer));
     } catch (error) {
@@ -64,7 +64,7 @@ export default function App() {
   }, [modules]);
 
 
-  const updateModuleGenerationState = useCallback((moduleId: string, newGenerationState: Partial<GenerationState>) => {
+  const updateModuleGenerationState = React.useCallback((moduleId: string, newGenerationState: Partial<GenerationState>) => {
     setModules(prevModules =>
       prevModules.map(m =>
         m.id === moduleId
@@ -75,7 +75,8 @@ export default function App() {
   }, []);
 
   const handleTestEmail = async () => {
-    const toastId = toast.loading('Sending test email...', toastOptions);
+    // FIX: Cast toast to any to access the 'loading' method, which seems to be missing from the type definitions.
+    const toastId = (toast as any).loading('Sending test email...', toastOptions);
     try {
         // Use placeholder values for the test
         const moduleName = 'Email System Test';
@@ -189,7 +190,8 @@ export default function App() {
       return;
     }
 
-    const toastId = toast.loading(`Processing ${file.name}...`, toastOptions);
+    // FIX: Cast toast to any to access the 'loading' method, which seems to be missing from the type definitions.
+    const toastId = (toast as any).loading(`Processing ${file.name}...`, toastOptions);
 
     try {
       const zip = await JSZip.loadAsync(file);

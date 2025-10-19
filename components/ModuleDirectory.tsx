@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import * as React from 'react';
 import { PrestaModule } from '../types';
 import ModuleCard from './ModuleCard';
 
@@ -10,7 +10,7 @@ interface ModuleDirectoryProps {
 }
 
 const ModuleDirectory: React.FC<ModuleDirectoryProps> = ({ modules, onModify, onUpload, activeGenerationId }) => {
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const fileInputRef = React.useRef<HTMLInputElement>(null);
 
   const handleUploadClick = () => {
     fileInputRef.current?.click();

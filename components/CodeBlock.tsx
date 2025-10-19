@@ -1,5 +1,6 @@
 
-import React, { useState } from 'react';
+
+import * as React from 'react';
 
 interface CodeBlockProps {
   filename: string;
@@ -7,7 +8,7 @@ interface CodeBlockProps {
 }
 
 const CodeBlock: React.FC<CodeBlockProps> = ({ filename, code }) => {
-  const [copied, setCopied] = useState(false);
+  const [copied, setCopied] = React.useState(false);
 
   const handleCopy = () => {
     navigator.clipboard.writeText(code).then(() => {

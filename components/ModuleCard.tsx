@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import * as React from 'react';
 import { PrestaModule, GenerationStatusEnum } from '../types';
 import GenerationDisplay from './GenerationDisplay';
 import CodeBlock from './CodeBlock';
@@ -29,13 +29,14 @@ const blobToBase64 = (blob: Blob): Promise<string> => {
 };
 
 const ModuleCard: React.FC<ModuleCardProps> = ({ module, onModify, isBeingGenerated }) => {
-  const [isExpanded, setIsExpanded] = useState(true);
-  const [showModifyForm, setShowModifyForm] = useState(false);
-  const [modificationRequest, setModificationRequest] = useState('');
+  const [isExpanded, setIsExpanded] = React.useState(true);
+  const [showModifyForm, setShowModifyForm] = React.useState(false);
+  const [modificationRequest, setModificationRequest] = React.useState('');
 
   const getModuleName = (): string => {
-    const files = module.generationState.files;
-    return Array.from(files.keys())[0]?.split('/')[0] || module.id.replace('mod_', 'Module');
+    // FIX: Introduce a typed variable to resolve the "split on unknown" error, which is likely a type inference issue.
+    const firstFile: string | undefined = Array.from(module.generationState.files.keys())[0];
+    return firstFile?.split('/')[0] || module.id.replace('mod_', 'Module');
   }
 
   const createZipBlob = async (): Promise<Blob | null> => {
@@ -45,7 +46,8 @@ const ModuleCard: React.FC<ModuleCardProps> = ({ module, onModify, isBeingGenera
     }
     const files = module.generationState.files;
     if (files.size === 0) {
-      toast.warn("No files have been generated for this module yet.", { theme: 'dark' });
+      // FIX: Cast toast to any to access the 'warn' method, which seems to be missing from the type definitions.
+      (toast as any).warn("No files have been generated for this module yet.", { theme: 'dark' });
       return null;
     }
     try {
@@ -76,7 +78,8 @@ const ModuleCard: React.FC<ModuleCardProps> = ({ module, onModify, isBeingGenera
   };
 
   const handleSendEmail = async () => {
-    const toastId = toast.loading('DEBUG: Starting email process...', { theme: 'dark', autoClose: false });
+    // FIX: Cast toast to any to access the 'loading' method, which seems to be missing from the type definitions.
+    const toastId = (toast as any).loading('DEBUG: Starting email process...', { theme: 'dark', autoClose: false });
 
     // Step 1: Create ZIP
     toast.update(toastId, { render: 'DEBUG (1/5): Creating module .zip file...', isLoading: true });

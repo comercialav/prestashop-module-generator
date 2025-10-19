@@ -1,5 +1,6 @@
 
-import React, { useEffect, useState } from 'react';
+
+import * as React from 'react';
 import { GenerationState } from '../types';
 
 interface GenerationDisplayProps {
@@ -8,9 +9,9 @@ interface GenerationDisplayProps {
 
 const GenerationDisplay: React.FC<GenerationDisplayProps> = ({ state }) => {
   const { plan, files } = state;
-  const [progress, setProgress] = useState(0);
+  const [progress, setProgress] = React.useState(0);
 
-  useEffect(() => {
+  React.useEffect(() => {
     const totalSteps = (plan.length || 5) + 2; // Plan steps + 2 code files
     const completedSteps = plan.filter(p => p).length + files.size;
     setProgress(Math.round((completedSteps / totalSteps) * 100));

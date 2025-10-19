@@ -24,7 +24,7 @@
  */
 
 // STEP 1: Replace this with the URL of your deployed backend proxy function.
-const BACKEND_PROXY_URL = 'https://presta-shop-module-genius-ai-sq8m.vercel.app/api/send-email';
+const BACKEND_PROXY_URL = 'https://prestashop-module-generator.vercel.app/api/send-email';
 
 export async function sendEmailNotification(moduleName: string, zipAsBase64: string): Promise<void> {
     if (BACKEND_PROXY_URL.includes('your-deployment-url')) {
