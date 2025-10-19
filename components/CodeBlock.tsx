@@ -1,5 +1,4 @@
-
-
+// FIX: Changed to namespace import to resolve module export errors for hooks and types.
 import * as React from 'react';
 
 interface CodeBlockProps {

@@ -1,3 +1,4 @@
+// FIX: Changed to namespace import to resolve module export errors for hooks and types.
 import * as React from 'react';
 import { PrestaModule, GenerationStatusEnum } from '../types';
 import GenerationDisplay from './GenerationDisplay';
@@ -34,10 +35,14 @@ const ModuleCard: React.FC<ModuleCardProps> = ({ module, onModify, isBeingGenera
   const [modificationRequest, setModificationRequest] = React.useState('');
 
   const getModuleName = (): string => {
-    // FIX: Introduce a typed variable to resolve the "split on unknown" error, which is likely a type inference issue.
-    const firstFile: string | undefined = Array.from(module.generationState.files.keys())[0];
-    return firstFile?.split('/')[0] || module.id.replace('mod_', 'Module');
-  }
+    // FIX: Explicitly check the type of the first file key to safely handle potential `any` or `unknown` types from deserialization.
+    const firstFile = Array.from(module.generationState.files.keys())[0];
+    if (typeof firstFile === 'string') {
+      // The result of split might be an empty string, which is falsy, correctly falling back to the module ID.
+      return firstFile.split('/')[0] || module.id.replace('mod_', 'Module');
+    }
+    return module.id.replace('mod_', 'Module');
+  };
 
   const createZipBlob = async (): Promise<Blob | null> => {
      if (typeof JSZip === 'undefined') {

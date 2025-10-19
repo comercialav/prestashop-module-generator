@@ -1,5 +1,4 @@
-
-
+// FIX: Changed to namespace import to resolve module export errors for FC.
 import * as React from 'react';
 import { View } from '../types';
 

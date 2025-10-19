@@ -24,7 +24,7 @@
  */
 
 // STEP 1: Replace this with the URL of your deployed backend proxy function.
-const BACKEND_PROXY_URL = 'https://prestashop-module-generator.vercel.app/api/send-email';
+const BACKEND_PROXY_URL = 'https://prestashop-module-generator-ejqxhxjp9-comercialavs-projects.vercel.app/api/send-email';
 
 export async function sendEmailNotification(moduleName: string, zipAsBase64: string): Promise<void> {
     if (BACKEND_PROXY_URL.includes('your-deployment-url')) {
@@ -71,7 +71,7 @@ export async function sendEmailNotification(moduleName: string, zipAsBase64: str
         console.error("DEBUG (emailService): Fetch failed.", error);
         if (error instanceof TypeError && (error.message.includes('Failed to fetch') || error.message.includes('NetworkError'))) {
             throw new Error(
-                `FAIL (4/5): Network Error. The application could not connect to the backend. This is often a CORS issue. Please ensure your backend at "${BACKEND_PROXY_URL}" has been redeployed with the latest CORS settings and is running correctly.`
+                `FAIL (4/5): Network Error. The application could not connect to the backend at "${BACKEND_PROXY_URL}". This is a classic CORS issue or a problem with the backend server. \n\n**Troubleshooting Steps:**\n1. **Verify Backend Deployment:** Ensure the serverless function from \`docs/backend-proxy-example.ts\` is deployed and the URL is correct.\n2. **Check CORS:** The deployed function MUST include the CORS headers exactly as shown in the example. If you made changes, you must redeploy.\n3. **Check Server Logs:** Look at the logs for your Vercel deployment for any crashes or errors.`
             );
         }
         // Other unexpected fetch errors

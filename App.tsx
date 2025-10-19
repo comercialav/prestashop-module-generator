@@ -1,3 +1,4 @@
+// FIX: Changed to namespace import to resolve module export errors for hooks.
 import * as React from 'react';
 import { View, PrestaModule, GenerationStatusEnum, GenerationState } from './types';
 import { generateModuleStream } from './services/geminiService';
