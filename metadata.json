@@ -1,0 +1,5 @@
+{
+  "name": "PrestaShop ModuleGenius AI",
+  "description": "An AI-powered expert assistant for creating and modifying PrestaShop 8.1/8.2 modules. Describe your needs, and the AI will research, plan, and generate the complete, functional code, ready to be packaged into a downloadable zip file.",
+  "requestFramePermissions": []
+}
