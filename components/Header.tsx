@@ -1,4 +1,4 @@
-// FIX: Changed to namespace import to resolve module export errors for FC.
+// FIX: Changed React import to a namespace import (`* as React`) to resolve type errors with hooks and generic functional components.
 import * as React from 'react';
 import { View } from '../types';
 

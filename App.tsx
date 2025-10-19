@@ -1,4 +1,4 @@
-// FIX: Changed to namespace import to resolve module export errors for hooks.
+// FIX: Changed React import to a namespace import (`* as React`) to resolve type errors with hooks and generic functional components.
 import * as React from 'react';
 import { View, PrestaModule, GenerationStatusEnum, GenerationState } from './types';
 import { generateModuleStream } from './services/geminiService';
@@ -201,7 +201,7 @@ export default function App() {
       let moduleDescription = `Module uploaded from ${file.name}`;
       let configXmlContent = '';
       
-      const filePromises = [];
+      const filePromises: Promise<void>[] = [];
       zip.forEach((relativePath, zipEntry) => {
         if (!zipEntry.dir) {
            filePromises.push(

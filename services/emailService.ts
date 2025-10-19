@@ -59,6 +59,8 @@ export async function sendEmailNotification(moduleName: string, zipAsBase64: str
         console.log(`DEBUG (emailService): Attempting to POST to ${BACKEND_PROXY_URL}`);
         response = await fetch(BACKEND_PROXY_URL, {
             method: 'POST',
+            mode: 'cors', // Be explicit about CORS
+            cache: 'no-cache', // Prevent caching issues with preflight requests
             headers: {
                 'Content-Type': 'application/json',
             },
@@ -71,7 +73,7 @@ export async function sendEmailNotification(moduleName: string, zipAsBase64: str
         console.error("DEBUG (emailService): Fetch failed.", error);
         if (error instanceof TypeError && (error.message.includes('Failed to fetch') || error.message.includes('NetworkError'))) {
             throw new Error(
-                `FAIL (4/5): Network Error. The application could not connect to the backend at "${BACKEND_PROXY_URL}". This is a classic CORS issue or a problem with the backend server. \n\n**Troubleshooting Steps:**\n1. **Verify Backend Deployment:** Ensure the serverless function from \`docs/backend-proxy-example.ts\` is deployed and the URL is correct.\n2. **Check CORS:** The deployed function MUST include the CORS headers exactly as shown in the example. If you made changes, you must redeploy.\n3. **Check Server Logs:** Look at the logs for your Vercel deployment for any crashes or errors.`
+                `FAIL (4/5): Network Error. The application cannot connect to the backend due to a CORS issue.\n\n**ACTION REQUIRED:**\n1. I have updated the required backend code. Open the file \`docs/backend-proxy-example.ts\`.\n2. Copy its entire content.\n3. Place it in the \`/api/send-email.ts\` file in your project.\n4. **REDEPLOY your project on Vercel.** This is the most critical step.\n\nAfter redeploying, the error should be resolved. If not, use the \`curl\` command provided in previous instructions to verify the CORS headers.`
             );
         }
         // Other unexpected fetch errors
