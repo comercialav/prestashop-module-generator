@@ -5,6 +5,7 @@ import GenerationDisplay from './GenerationDisplay';
 import CodeBlock from './CodeBlock';
 import { toast } from 'react-toastify';
 import { sendEmailNotification } from '../services/emailService';
+import JSZip from 'jszip';
 
 interface ModuleCardProps {
   module: PrestaModule;
@@ -47,10 +48,6 @@ const ModuleCard: React.FC<ModuleCardProps> = ({ module, onModify, isBeingGenera
   };
 
   const createZipBlob = async (): Promise<Blob | null> => {
-     if (typeof JSZip === 'undefined') {
-      toast.error("JSZip library not loaded. Cannot create zip file.", { theme: 'dark' });
-      return null;
-    }
     const files = module.generationState.files;
     if (files.size === 0) {
       // FIX: Cast toast to any to access the 'warn' method, which seems to be missing from the type definitions.

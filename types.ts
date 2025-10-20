@@ -1,9 +1,3 @@
-// FIX: Wrapped JSZip declaration in `declare global` to make it a true global type
-// that is accessible from other modules, resolving reference errors.
-declare global {
-  const JSZip: any;
-}
-
 export enum View {
   CREATION = 'CREATION',
   DIRECTORY = 'DIRECTORY',

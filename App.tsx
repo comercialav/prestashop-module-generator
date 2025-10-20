@@ -7,6 +7,7 @@ import ModuleCreation from './components/ModuleCreation';
 import ModuleDirectory from './components/ModuleDirectory';
 import { ToastContainer, toast } from 'react-toastify';
 import { sendEmailNotification } from './services/emailService';
+import JSZip from 'jszip';
 
 // Minimalist styling for react-toastify to match Tailwind dark theme
 const toastOptions = {
@@ -190,11 +191,6 @@ export default function App() {
   };
 
   const handleUploadModule = async (file: File) => {
-    if (typeof JSZip === 'undefined') {
-      toast.error("File processing library not loaded. Please try again.", toastOptions);
-      return;
-    }
-
     // FIX: Cast toast to any to access the 'loading' method, which seems to be missing from the type definitions.
     const toastId = (toast as any).loading(`Processing ${file.name}...`, toastOptions);
 
