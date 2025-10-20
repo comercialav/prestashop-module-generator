@@ -14,16 +14,19 @@
  *       your key from https://resend.com/.
  *
  * 2.  **Configure the URL Below:**
- *     - The URL is now a relative path, which will work automatically with
- *       the Vercel deployment. No changes should be needed here.
+ *     - The URL has been updated to the absolute path of your Vercel deployment
+ *       to ensure the connection is stable.
  *
  * @param moduleName The name of the module being sent.
  * @param zipAsBase64 The generated module zip file, encoded as a base64 string.
  * @returns A promise that resolves on success or throws a detailed error on failure.
  */
 
-// Use a relative path to automatically point to the Vercel serverless function.
-const BACKEND_PROXY_URL = '/api/send-email';
+// UPDATED: Using the full, absolute URL to your Vercel deployment as requested.
+// This ensures the frontend knows exactly where to send the request.
+// If this still fails, the most likely cause is a missing `RESEND_API_KEY`
+// in your Vercel project's environment variables.
+const BACKEND_PROXY_URL = 'https://prestashop-module-generator.vercel.app/api/send-email';
 
 export async function sendEmailNotification(moduleName: string, zipAsBase64: string): Promise<void> {
     const emailPayload = {
@@ -64,7 +67,7 @@ export async function sendEmailNotification(moduleName: string, zipAsBase64: str
         console.error("DEBUG (emailService): Fetch failed.", error);
         if (error instanceof TypeError && (error.message.includes('Failed to fetch') || error.message.includes('NetworkError'))) {
              throw new Error(
-                'FAIL: Network Error. Could not connect to the backend. Please check your Vercel deployment logs for errors related to the `/api/send-email` function.'
+                'FAIL: Network Error. Could not connect to the backend. Please check your Vercel deployment logs for errors related to the `/api/send-email` function. Also, verify the URL is correct and the backend is running.'
             );
         }
         throw new Error(`FAIL: An unexpected network error occurred: ${error instanceof Error ? error.message : String(error)}`);
