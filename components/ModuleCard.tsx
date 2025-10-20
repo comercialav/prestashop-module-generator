@@ -1,5 +1,5 @@
-// FIX: Changed React import to a namespace import (`* as React`) to resolve type errors with hooks and generic functional components.
-import * as React from 'react';
+// FIX: Switched from a namespace import (`* as React`) to a default import with the named `useState` hook to resolve TypeScript errors with generic functional components (`React.FC`).
+import React, { useState } from 'react';
 import { PrestaModule, GenerationStatusEnum } from '../types';
 import GenerationDisplay from './GenerationDisplay';
 import CodeBlock from './CodeBlock';
@@ -29,10 +29,11 @@ const blobToBase64 = (blob: Blob): Promise<string> => {
   });
 };
 
+// FIX: Namespace '"file:///node_modules/react/index".export=' has no exported member 'FC'.
 const ModuleCard: React.FC<ModuleCardProps> = ({ module, onModify, isBeingGenerated }) => {
-  const [isExpanded, setIsExpanded] = React.useState(true);
-  const [showModifyForm, setShowModifyForm] = React.useState(false);
-  const [modificationRequest, setModificationRequest] = React.useState('');
+  const [isExpanded, setIsExpanded] = useState(true);
+  const [showModifyForm, setShowModifyForm] = useState(false);
+  const [modificationRequest, setModificationRequest] = useState('');
 
   const getModuleName = (): string => {
     // FIX: Explicitly check the type of the first file key to safely handle potential `any` or `unknown` types from deserialization.

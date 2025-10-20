@@ -1,5 +1,5 @@
-// FIX: Changed React import to a namespace import (`* as React`) to resolve type errors with hooks and generic functional components.
-import * as React from 'react';
+// FIX: Switched from a namespace import (`* as React`) to a default import with named hooks (`useState`, `useEffect`, `useCallback`) to resolve TypeScript errors with generic types and hooks.
+import React, { useState, useEffect, useCallback } from 'react';
 import { View, PrestaModule, GenerationStatusEnum, GenerationState } from './types';
 import { generateModuleStream } from './services/geminiService';
 import Header from './components/Header';
@@ -42,9 +42,11 @@ const reviver = (key: string, value: any) => {
 
 
 export default function App() {
-  const [view, setView] = React.useState<View>(View.CREATION);
+  // FIX: Untyped function calls may not accept type arguments.
+  const [view, setView] = useState<View>(View.CREATION);
   // Load modules from localStorage on initial render
-  const [modules, setModules] = React.useState<PrestaModule[]>(() => {
+  // FIX: Untyped function calls may not accept type arguments.
+  const [modules, setModules] = useState<PrestaModule[]>(() => {
     try {
       const savedModules = window.localStorage.getItem('prestaModules');
       return savedModules ? JSON.parse(savedModules, reviver) : [];
@@ -53,10 +55,11 @@ export default function App() {
       return [];
     }
   });
-  const [activeGenerationId, setActiveGenerationId] = React.useState<string | null>(null);
+  // FIX: Untyped function calls may not accept type arguments.
+  const [activeGenerationId, setActiveGenerationId] = useState<string | null>(null);
 
   // Save modules to localStorage whenever they change
-  React.useEffect(() => {
+  useEffect(() => {
     try {
       window.localStorage.setItem('prestaModules', JSON.stringify(modules, replacer));
     } catch (error) {
@@ -65,7 +68,7 @@ export default function App() {
   }, [modules]);
 
 
-  const updateModuleGenerationState = React.useCallback((moduleId: string, newGenerationState: Partial<GenerationState>) => {
+  const updateModuleGenerationState = useCallback((moduleId: string, newGenerationState: Partial<GenerationState>) => {
     setModules(prevModules =>
       prevModules.map(m =>
         m.id === moduleId

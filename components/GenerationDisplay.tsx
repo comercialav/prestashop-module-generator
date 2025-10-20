@@ -1,16 +1,17 @@
-// FIX: Changed React import to a namespace import (`* as React`) to resolve type errors with hooks and generic functional components.
-import * as React from 'react';
+// FIX: Switched from a namespace import (`* as React`) to a default import with named hooks (`useState`, `useEffect`) to resolve TypeScript errors with generic types and hooks.
+import React, { useState, useEffect } from 'react';
 import { GenerationState } from '../types';
 
 interface GenerationDisplayProps {
   state: GenerationState;
 }
 
+// FIX: Namespace '"file:///node_modules/react/index".export=' has no exported member 'FC'.
 const GenerationDisplay: React.FC<GenerationDisplayProps> = ({ state }) => {
   const { plan, files } = state;
-  const [progress, setProgress] = React.useState(0);
+  const [progress, setProgress] = useState(0);
 
-  React.useEffect(() => {
+  useEffect(() => {
     const totalSteps = (plan.length || 5) + 2; // Plan steps + 2 code files
     const completedSteps = plan.filter(p => p).length + files.size;
     setProgress(Math.round((completedSteps / totalSteps) * 100));

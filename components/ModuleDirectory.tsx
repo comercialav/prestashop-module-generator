@@ -1,5 +1,5 @@
-// FIX: Changed React import to a namespace import (`* as React`) to resolve type errors with hooks and generic functional components.
-import * as React from 'react';
+// FIX: Switched from a namespace import (`* as React`) to a default import with the named `useRef` hook to resolve TypeScript errors with generic types and hooks.
+import React, { useRef } from 'react';
 import { PrestaModule } from '../types';
 import ModuleCard from './ModuleCard';
 
@@ -10,13 +10,16 @@ interface ModuleDirectoryProps {
   activeGenerationId: string | null;
 }
 
+// FIX: Namespace '"file:///node_modules/react/index".export=' has no exported member 'FC'.
 const ModuleDirectory: React.FC<ModuleDirectoryProps> = ({ modules, onModify, onUpload, activeGenerationId }) => {
-  const fileInputRef = React.useRef<HTMLInputElement>(null);
+  // FIX: Untyped function calls may not accept type arguments.
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleUploadClick = () => {
     fileInputRef.current?.click();
   };
 
+  // FIX: Namespace '"file:///node_modules/react/index".export=' has no exported member 'ChangeEvent'.
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {

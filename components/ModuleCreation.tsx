@@ -1,14 +1,16 @@
-// FIX: Changed React import to a namespace import (`* as React`) to resolve type errors with hooks and generic functional components.
-import * as React from 'react';
+// FIX: Switched from a namespace import (`* as React`) to a default import with the named `useState` hook to resolve TypeScript errors with generic types and hooks.
+import React, { useState } from 'react';
 
 interface ModuleCreationProps {
   onCreate: (description: string) => void;
   isGenerating: boolean;
 }
 
+// FIX: Namespace '"file:///node_modules/react/index".export=' has no exported member 'FC'.
 const ModuleCreation: React.FC<ModuleCreationProps> = ({ onCreate, isGenerating }) => {
-  const [description, setDescription] = React.useState('');
+  const [description, setDescription] = useState('');
 
+  // FIX: Namespace '"file:///node_modules/react/index".export=' has no exported member 'FormEvent'.
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     onCreate(description);

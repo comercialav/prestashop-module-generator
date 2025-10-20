@@ -1,13 +1,14 @@
-// FIX: Changed React import to a namespace import (`* as React`) to resolve type errors with hooks and generic functional components.
-import * as React from 'react';
+// FIX: Switched from a namespace import (`* as React`) to a default import with the named `useState` hook to resolve TypeScript errors with generic types and hooks.
+import React, { useState } from 'react';
 
 interface CodeBlockProps {
   filename: string;
   code: string;
 }
 
+// FIX: Namespace '"file:///node_modules/react/index".export=' has no exported member 'FC'.
 const CodeBlock: React.FC<CodeBlockProps> = ({ filename, code }) => {
-  const [copied, setCopied] = React.useState(false);
+  const [copied, setCopied] = useState(false);
 
   const handleCopy = () => {
     navigator.clipboard.writeText(code).then(() => {

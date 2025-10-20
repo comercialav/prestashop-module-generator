@@ -1,5 +1,5 @@
-// FIX: Changed React import to a namespace import (`* as React`) to resolve type errors with hooks and generic functional components.
-import * as React from 'react';
+// FIX: Switched from a namespace import (`* as React`) to a default import (`React`) to resolve TypeScript errors with generic functional components (`React.FC`).
+import React from 'react';
 import { View } from '../types';
 
 interface HeaderProps {
@@ -9,6 +9,7 @@ interface HeaderProps {
   isGenerating: boolean;
 }
 
+// FIX: Namespace '"file:///node_modules/react/index".export=' has no exported member 'FC'.
 const NavButton: React.FC<{
   label: string;
   isActive: boolean;
@@ -26,6 +27,7 @@ const NavButton: React.FC<{
   </button>
 );
 
+// FIX: Namespace '"file:///node_modules/react/index".export=' has no exported member 'FC'.
 const Header: React.FC<HeaderProps> = ({ currentView, setView, onTestEmail, isGenerating }) => {
   return (
     <header className="bg-gray-800/80 backdrop-blur-sm sticky top-0 z-50 shadow-lg shadow-black/20">
