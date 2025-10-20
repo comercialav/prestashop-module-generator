@@ -87,11 +87,12 @@ export default function App() {
         // The base64 content can be empty for the mock, as it's not used.
         // For a real implementation, Resend can send emails without attachments.
         const base64Content = ''; 
+        const testRecipient = 's.falconsuarez@gmail.com';
 
-        await sendEmailNotification(moduleName, base64Content);
+        await sendEmailNotification(moduleName, base64Content, testRecipient);
 
         toast.update(toastId, {
-            render: 'Test email process completed successfully!',
+            render: `Test email process completed successfully to ${testRecipient}!`,
             type: 'success',
             isLoading: false,
             autoClose: 5000

@@ -11,7 +11,7 @@
  *     - The backend code is now located at `/api/send-email.ts`.
  *     - Vercel will automatically deploy this as a serverless function.
  *     - During deployment, set the `RESEND_API_KEY` environment variable with
- *       your key from https://resend.com/.
+ *       your key from https://resend.com/. The key MUST start with `re_`.
  *
  * 2.  **Configure the URL Below:**
  *     - The URL has been updated to the absolute path of your Vercel deployment
@@ -19,18 +19,23 @@
  *
  * @param moduleName The name of the module being sent.
  * @param zipAsBase64 The generated module zip file, encoded as a base64 string.
+ * @param recipientEmail The email address to send the module to.
  * @returns A promise that resolves on success or throws a detailed error on failure.
  */
 
 // UPDATED: Using the full, absolute URL to your Vercel deployment as requested.
 // This ensures the frontend knows exactly where to send the request.
-// If this still fails, the most likely cause is a missing `RESEND_API_KEY`
+// If this still fails, the most likely cause is a missing or INVALID `RESEND_API_KEY`
 // in your Vercel project's environment variables.
 const BACKEND_PROXY_URL = 'https://prestashop-module-generator.vercel.app/api/send-email';
 
-export async function sendEmailNotification(moduleName: string, zipAsBase64: string): Promise<void> {
+export async function sendEmailNotification(moduleName: string, zipAsBase64: string, recipientEmail: string): Promise<void> {
+    if (!recipientEmail) {
+        throw new Error("Recipient email cannot be empty.");
+    }
+    
     const emailPayload = {
-        to: ['s.falconsuarez@gmail.com'],
+        to: [recipientEmail],
         subject: `Your PrestaShop Module "${moduleName}" is Ready!`,
         html: `
             <h1>Module Generation Complete</h1>
@@ -74,18 +79,24 @@ export async function sendEmailNotification(moduleName: string, zipAsBase64: str
     }
 
     if (!response.ok) {
-        console.error(`DEBUG (emailService): Proxy returned an error status: ${response.status}`);
-        let errorBody;
-        try {
-            errorBody = await response.json();
-            console.error('DEBUG (emailService): Proxy error body:', errorBody);
-        } catch (jsonError) {
-            console.error('DEBUG (emailService): Could not parse error body as JSON.');
-            throw new Error(`FAIL: Backend proxy returned an error (Status: ${response.status} ${response.statusText}), but the error message was not in a readable format.`);
-        }
+        console.error(`DEBUG (emailService): Proxy returned an error status: ${response.status} ${response.statusText}`);
+        const errorBodyText = await response.text(); // Get raw text first to avoid losing it
         
-        const resendError = errorBody.name && errorBody.message ? `Resend API Error (${errorBody.name}): ${errorBody.message}` : JSON.stringify(errorBody);
-        throw new Error(`FAIL: The backend proxy reported an error. ${resendError}`);
+        try {
+            // Try to parse it as JSON for a structured error message
+            const errorBodyJSON = JSON.parse(errorBodyText);
+            console.error('DEBUG (emailService): Proxy error body (JSON):', JSON.stringify(errorBodyJSON, null, 2));
+
+            // Extract a clean message from known error structures
+            const errorMessage = errorBodyJSON.message || 
+                                 (errorBodyJSON.name && errorBodyJSON.message ? `Resend API Error (${errorBodyJSON.name}): ${errorBodyJSON.message}` : 
+                                 JSON.stringify(errorBodyJSON));
+            throw new Error(`FAIL: The backend proxy reported an error: ${errorMessage}`);
+        } catch (jsonError) {
+            // If it's not JSON, it might be a Vercel error page or simple text
+            console.error('DEBUG (emailService): Could not parse error body as JSON. Raw text:', errorBodyText);
+            throw new Error(`FAIL: Backend proxy returned a non-JSON error (Status: ${response.status}). Raw response: "${errorBodyText.substring(0, 200)}..."`);
+        }
     }
 
     console.log('DEBUG (emailService): Proxy returned success. Email sending process complete from frontend perspective.');

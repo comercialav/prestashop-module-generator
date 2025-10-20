@@ -34,6 +34,7 @@ const ModuleCard: React.FC<ModuleCardProps> = ({ module, onModify, isBeingGenera
   const [isExpanded, setIsExpanded] = useState(true);
   const [showModifyForm, setShowModifyForm] = useState(false);
   const [modificationRequest, setModificationRequest] = useState('');
+  const [recipientEmail, setRecipientEmail] = useState('s.falconsuarez@gmail.com');
 
   const getModuleName = (): string => {
     // FIX: Explicitly check the type of the first file key to safely handle potential `any` or `unknown` types from deserialization.
@@ -84,6 +85,10 @@ const ModuleCard: React.FC<ModuleCardProps> = ({ module, onModify, isBeingGenera
   };
 
   const handleSendEmail = async () => {
+    if (!recipientEmail || !/^\S+@\S+\.\S+$/.test(recipientEmail)) {
+      toast.error("Please enter a valid email address.", { theme: 'dark' });
+      return;
+    }
     // FIX: Cast toast to any to access the 'loading' method, which seems to be missing from the type definitions.
     const toastId = (toast as any).loading('DEBUG: Starting email process...', { theme: 'dark', autoClose: false });
 
@@ -112,11 +117,11 @@ const ModuleCard: React.FC<ModuleCardProps> = ({ module, onModify, isBeingGenera
     
     // Step 3 & 4: Call the service and await response
     try {
-      toast.update(toastId, { render: `DEBUG (3/5): Contacting backend proxy at /api/send-email for module "${moduleName}"...`, isLoading: true });
+      toast.update(toastId, { render: `DEBUG (3/5): Contacting backend proxy for module "${moduleName}"...`, isLoading: true });
       // The service itself will now throw detailed errors
-      await sendEmailNotification(moduleName, base64Content);
+      await sendEmailNotification(moduleName, base64Content, recipientEmail);
       
-      toast.update(toastId, { render: `DEBUG OK (5/5): Proxy confirmed email sent for "${moduleName}"!`, type: 'success', isLoading: false, autoClose: 5000 });
+      toast.update(toastId, { render: `DEBUG OK (5/5): Proxy confirmed email sent for "${moduleName}" to ${recipientEmail}!`, type: 'success', isLoading: false, autoClose: 5000 });
     } catch(error) {
        // Step 5: Catch and display the detailed error from the service
        const errorMessage = error instanceof Error ? error.message : "An unknown error occurred.";
@@ -169,10 +174,22 @@ const ModuleCard: React.FC<ModuleCardProps> = ({ module, onModify, isBeingGenera
               </div>
                <div className="mt-6 p-4 bg-gray-900/50 rounded-lg border border-gray-700">
                   <h4 className="text-md font-semibold text-gray-300 mb-2">Send Module via Email</h4>
-                  <p className="text-sm text-gray-400 mb-3">Click the button to send the module .zip file to your email via our secure service.</p>
-                  <div className="flex justify-end">
-                    <button onClick={handleSendEmail} disabled={isBeingGenerated} className="px-4 py-2 bg-green-600 text-white font-semibold rounded-lg shadow-md hover:bg-green-500 disabled:bg-gray-600/50 disabled:cursor-not-allowed transition-colors duration-200">
-                      Send Email
+                  <p className="text-sm text-gray-400 mb-3">Enter a recipient email and click send. The module .zip file will be attached.</p>
+                  <div className="flex items-center space-x-2">
+                     <input
+                        type="email"
+                        value={recipientEmail}
+                        onChange={(e) => setRecipientEmail(e.target.value)}
+                        disabled={isBeingGenerated}
+                        className="flex-grow bg-gray-800 text-gray-200 border border-gray-600 rounded-md p-2 focus:ring-2 focus:ring-sky-500 focus:border-sky-500 transition-all placeholder-gray-500"
+                        placeholder="recipient@example.com"
+                      />
+                    <button 
+                      onClick={handleSendEmail} 
+                      disabled={isBeingGenerated || !recipientEmail} 
+                      className="px-4 py-2 bg-green-600 text-white font-semibold rounded-lg shadow-md hover:bg-green-500 disabled:bg-gray-600/50 disabled:cursor-not-allowed transition-colors duration-200 flex-shrink-0"
+                    >
+                      Send
                     </button>
                   </div>
               </div>
