@@ -2,8 +2,16 @@
   "name": "prestashop-module-generator-app",
   "version": "1.0.0",
   "private": true,
-  "description": "Dependencies for Vercel serverless function",
+  "description": "An AI-powered expert assistant for creating and modifying PrestaShop modules.",
+  "scripts": {
+    "build": "vite build"
+  },
   "dependencies": {
     "resend": "^3.2.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.3.1",
+    "typescript": "^5.4.5",
+    "vite": "^5.2.13"
   }
 }
